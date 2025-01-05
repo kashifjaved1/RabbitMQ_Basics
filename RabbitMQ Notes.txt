@@ -1,0 +1,23 @@
+RabbitMQ Notes:
+	-> Following are terms in RabbitMQ:
+			1. Producer -> one who gonna create/produce messages.
+			2. Exchange -> one which gonna process the producer messages.
+			3. Queue -> place where exchange will be pushing producer messages.
+			4. Consumer -> one who gonna consume/use messages.
+			5. Connection -> to push messages the producer will open a connection.
+			6. Channel -> the message will be pushed via channel, and one connection can have multiple channels.
+
+	-> Exchange connnects with Queues via BindingKey.
+	-> Publisher have the RoutingKey for sending messages to specific queue where PublisherRoutingKey == QueueBindingKey.
+
+	-> Types of Exchanges:
+			0. Default/Nameless:
+				It uses PublisherRoutingKey == QueueName, instead of PublisherRoutingKey == QueueBindingKey.
+			1. Fanout:
+				It ignores the RoutingKey, and BindingKey and send messages to all Queues.
+			2. Direct:
+				It sends message(s) to only Queue(s) where PublisherRoutingKey == Queue(s)BindingKey.
+			3. Topic:
+				It uses partial key matching via wildcard(*) mechanism, e.g. "abc.*", so here for the key to get match first 'abc.' should be exact same and next something like abc.green == abc.green will do the job.
+			4. Header:
+				It uses message header instead of RoutingKey.
