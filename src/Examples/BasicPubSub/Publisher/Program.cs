@@ -1,8 +1,6 @@
 ﻿using Core.Commons.Enums;
 using Core.Commons.Helpers;
 using Core.Commons.Shared;
-using Newtonsoft.Json;
-using System.Text;
 
 Uri uri = new Uri("amqp://guest:guest@localhost:5672");
 string clientName = "Publisher";
@@ -15,15 +13,6 @@ RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.Dire
 RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
 RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, ExampleData.MyExchange, ExampleData.MyRoutingKey);
 
-var message = new
-{
-    ProductId = Guid.NewGuid(),
-    ProductName = "ABC",
-    Price = "100$"
-};
-
-var messageJson = JsonConvert.SerializeObject(message);
-var messageBody = Encoding.UTF8.GetBytes(messageJson);
-
-RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyExchange, routingKey:ExampleData.MyRoutingKey, messageBody: messageBody);
+var message = "This is a basic message.";
+RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyExchange, routingKey:ExampleData.MyRoutingKey, message: message);
 RabbitMqHelper.CloseConnection(channel, connection);

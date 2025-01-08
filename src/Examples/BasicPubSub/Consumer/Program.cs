@@ -16,4 +16,7 @@ RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, ExampleData.MyExchange, E
 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); // process one message at a time so other consumers won't get stop for this consumer.
 
 var consumer = RabbitMqHelper.GetConsumer(channel);
-RabbitMqHelper.BasicConsumeMessage(channel, consumer, ExampleData.MyQueue);
+var response = RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyQueue);
+
+Console.WriteLine(response);
+RabbitMqHelper.CloseConnection(channel, connection);

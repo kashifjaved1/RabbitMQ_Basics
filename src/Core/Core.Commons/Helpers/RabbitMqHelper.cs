@@ -148,15 +148,16 @@ namespace Core.Commons.Helpers
         /// </summary>
         /// <param name="channel">The channel.</param>
         /// <param name="routingKey">The route key.</param>
-        /// <param name="messageBody">The message.</param>
+        /// <param name="message">The message.</param>
         /// <param name="exchange">The exchange.</param>
         /// <param name="properties">The properties.</param>
-        public static string BasicPublishMessage(IModel channel, string routingKey, byte[] messageBody, string? exchange = null, IBasicProperties? properties = null)
+        public static string BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null)
         {
             try
             {
-                channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: messageBody);
-                Console.WriteLine($"published message: {messageBody}");
+                var body = Encoding.UTF8.GetBytes(message);
+                channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
+                Console.WriteLine($"published message: {message}");
 
                 return "Message(s) published";
             }
@@ -179,12 +180,12 @@ namespace Core.Commons.Helpers
         /// <summary>
         /// Consumes the message.
         /// </summary>
-        /// <param name="channel">The channel.</param>
         /// <param name="consumer">The consumer.</param>
+        /// <param name="channel">The channel.</param>
         /// <param name="queue">The queue.</param>
         /// <param name="autoAck">if set to <c>true</c> [automatic ack].</param>
         /// <returns>The string consumed message</returns>
-        public static string BasicConsumeMessage(IModel channel, EventingBasicConsumer consumer, string queue, bool autoAck = false)
+        public static string BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = true)
         {
             try
             {
@@ -192,7 +193,6 @@ namespace Core.Commons.Helpers
                 {
                     var body = args.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    msg = message;
                     Console.WriteLine($"published message: {message}");
                 };
 
