@@ -9,10 +9,17 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.Direct);
-RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
-RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, ExampleData.MyExchange, ExampleData.MyRoutingKey);
+string exchangeName = string.Empty; // Default Exchange.
+var useDefaultExchange = RabbitMqHelper.UseDefaultExchange();
+if (!useDefaultExchange)
+{
+    exchangeName = ExampleData.MyExchange;
+    RabbitMqHelper.CreateExchange(channel, exchangeName, ExchangeType.Direct);
+}
 
-var message = "This is a basic message.";
-RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyExchange, routingKey:ExampleData.MyRoutingKey, message: message);
+RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
+RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, exchangeName, ExampleData.MyRoutingKey);
+
+var message = "This is a basic message!";
+RabbitMqHelper.BasicPublishMessage(channel, exchange: exchangeName, routingKey:ExampleData.MyRoutingKey, message: message);
 RabbitMqHelper.CloseConnection(channel, connection);

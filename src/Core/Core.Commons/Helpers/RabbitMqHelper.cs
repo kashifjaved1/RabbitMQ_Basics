@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 using Core.Commons.Exceptions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -123,6 +124,16 @@ namespace Core.Commons.Helpers
         }
 
         /// <summary>
+        /// Creates the temporary queue.
+        /// </summary>
+        /// <param name="channel">The channel.</param>
+        /// <returns>The temp queueName.</returns>
+        public static string CreateTemporaryQueue(IModel channel)
+        {
+            return channel.QueueDeclare().QueueName;
+        }
+
+        /// <summary>
         /// Binds the queue.
         /// </summary>
         /// <param name="channel">The channel.</param>
@@ -212,17 +223,63 @@ namespace Core.Commons.Helpers
         /// <param name="queue">The queue.</param>
         /// <param name="autoAck">if set to <c>true</c> [automatic ack].</param>
         /// <returns>The string consumed message</returns>
-        public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false) // setting autoAck to false by default
+        public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false, string? clientName = null) // setting autoAck to false by default
                                                                                                                                    // so that we'll manually acknowledge the message(s).
         {
             //// Uncomment below code snippet for BasicsExample.
+            try
+            {
+                string displayText = string.Empty;
+                consumer.Received += (msg, args) =>
+                {
+                    var body = args.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    if (string.IsNullOrEmpty(clientName))
+                    {
+                        displayText = $"Received message: '{message}'.";
+                    }
+                    else
+                    {
+                        displayText = $"{clientName} - Received message: '{message}'.";
+                    }
+
+                    Console.WriteLine(displayText);
+                };
+
+                channel.BasicConsume(queue, autoAck, consumer);
+                Console.WriteLine("Consuming...");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Consume failed: {ex.Message}");
+            }
+
+            // Uncomment below code snippet for CompetingConsumer.
             //try
             //{
+            //    int publishedTime = 0;
+            //    int messageNo = 0;
+            //    string displayText = string.Empty;
             //    consumer.Received += (msg, args) =>
             //    {
+            //        publishedTime = Random.Next(1, 5);
+
             //        var body = args.Body.ToArray();
             //        var message = Encoding.UTF8.GetString(body);
-            //        Console.WriteLine($"published message: {message}");
+            //        if (string.IsNullOrEmpty(clientName))
+            //        {
+            //            displayText = $"Received message #{++messageNo} '{message}', it'll take {publishedTime}s to process.";
+            //        }
+            //        else
+            //        {
+            //            displayText = $"{clientName} - Received message #{++messageNo} '{message}', it'll take {publishedTime}s to process.";
+            //        }
+
+            //        Console.WriteLine(displayText);
+
+            //        Task.Delay(TimeSpan.FromSeconds(publishedTime)).Wait();
+            //        channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 'deliveryTag' is for ensuring that the message we're processing and the one one
+            //        // acknowledge is same, and 'multiple: false' ensures that we only process one message at a time.
             //    };
 
             //    channel.BasicConsume(queue, autoAck, consumer);
@@ -232,31 +289,23 @@ namespace Core.Commons.Helpers
             //{
             //    throw new Exception($"Consume failed: {ex.Message}");
             //}
+        }
 
-            // Uncomment below code snippet for CompetingConsumer.
-            try
+        public static bool UseDefaultExchange()
+        {
+            Console.Write("Want to use default? Y/N: ");
+            
+            while (true)
             {
-                int publishedTime = 0;
-                int messageNo = 0;
-                consumer.Received += (msg, args) =>
+                var choice = Console.ReadKey();
+                if (choice.Key == ConsoleKey.Y)
                 {
-                    publishedTime = Random.Next(1, 5);
-
-                    var body = args.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine($"Received #message{++messageNo} '{message}', it'll take {publishedTime}s to process.");
-
-                    Task.Delay(TimeSpan.FromSeconds(publishedTime)).Wait();
-                    channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 'deliveryTag' is for ensuring that the message we're processing and the one one
-                    // acknowledge is same, and 'multiple: false' ensures that we only process one message at a time.
-                };
-
-                channel.BasicConsume(queue, autoAck, consumer);
-                Console.WriteLine("Consuming...");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Consume failed: {ex.Message}");
+                    return true;
+                }
+                else if (choice.Key == ConsoleKey.N)
+                {
+                    return false;
+                }
             }
         }
     }
