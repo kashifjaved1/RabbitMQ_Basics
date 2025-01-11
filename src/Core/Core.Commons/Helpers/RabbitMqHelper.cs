@@ -12,6 +12,11 @@ namespace Core.Commons.Helpers
     public static class RabbitMqHelper
     {
         /// <summary>
+        /// The random instance.
+        /// </summary>
+        private static readonly Random Random = new Random();
+
+        /// <summary>
         /// Gets the connection factory.
         /// </summary>
         /// <param name="uri">The URI.</param>
@@ -151,19 +156,41 @@ namespace Core.Commons.Helpers
         /// <param name="message">The message.</param>
         /// <param name="exchange">The exchange.</param>
         /// <param name="properties">The properties.</param>
-        public static string BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null)
+        public static void BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null)
         {
+            // Uncomment below code snippet for BasicsExample.
+            //try
+            //{
+            //    var body = Encoding.UTF8.GetBytes(message);
+            //    channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
+            //    Console.WriteLine($"published message: {message}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    return $"Publish failed: {ex.Message}";
+            //}
+
+            // Uncomment below code snippet for CompetingConsumer.
             try
             {
-                var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
-                Console.WriteLine($"published message: {message}");
+                var messageNo = 0;
+                int publishingTime = 0;
+                Console.WriteLine($"Publishing...");
+                //Console.WriteLine($"Sending message #{messageNo++}");
+                while (true)
+                {
+                    publishingTime = Random.Next(1, 3);
 
-                return "Message(s) published";
+                    var body = Encoding.UTF8.GetBytes(message);
+                    channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
+
+                    Task.Delay(TimeSpan.FromSeconds(publishingTime)).Wait();
+                    Console.WriteLine($"Message #{++messageNo} '{message}' has been published in total {publishingTime}s.");
+                }
             }
             catch (Exception ex)
             {
-                return $"Publish failed: {ex.Message}";
+                throw new Exception($"Publish failed: {ex.Message}");
             }
         }
 
@@ -185,25 +212,51 @@ namespace Core.Commons.Helpers
         /// <param name="queue">The queue.</param>
         /// <param name="autoAck">if set to <c>true</c> [automatic ack].</param>
         /// <returns>The string consumed message</returns>
-        public static string BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false) // setting autoAck to false by default
-            // so that we'll manually acknowledge the message(s).
+        public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false) // setting autoAck to false by default
+                                                                                                                                   // so that we'll manually acknowledge the message(s).
         {
+            //// Uncomment below code snippet for BasicsExample.
+            //try
+            //{
+            //    consumer.Received += (msg, args) =>
+            //    {
+            //        var body = args.Body.ToArray();
+            //        var message = Encoding.UTF8.GetString(body);
+            //        Console.WriteLine($"published message: {message}");
+            //    };
+
+            //    channel.BasicConsume(queue, autoAck, consumer);
+            //    Console.WriteLine("Consuming...");
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception($"Consume failed: {ex.Message}");
+            //}
+
+            // Uncomment below code snippet for CompetingConsumer.
             try
             {
+                int publishedTime = 0;
+                int messageNo = 0;
                 consumer.Received += (msg, args) =>
                 {
+                    publishedTime = Random.Next(1, 5);
+
                     var body = args.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine($"published message: {message}");
+                    Console.WriteLine($"Received #message{++messageNo} '{message}', it'll take {publishedTime}s to process.");
+
+                    Task.Delay(TimeSpan.FromSeconds(publishedTime)).Wait();
+                    channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 'deliveryTag' is for ensuring that the message we're processing and the one one
+                    // acknowledge is same, and 'multiple: false' ensures that we only process one message at a time.
                 };
 
                 channel.BasicConsume(queue, autoAck, consumer);
-
-                return "Message(s) consumed.";
+                Console.WriteLine("Consuming...");
             }
             catch (Exception ex)
             {
-                return $"Consume failed: {ex.Message}";
+                throw new Exception($"Consume failed: {ex.Message}");
             }
         }
     }

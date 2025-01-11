@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Core.Commons.Enums;
+﻿using Core.Commons.Enums;
 using Core.Commons.Helpers;
 using Core.Commons.Shared;
 
@@ -17,7 +16,7 @@ channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); // Competing
                                                                     // get stopped for this consumer if it taking more than required time to process a message.
 
 var consumer = RabbitMqHelper.GetConsumer(channel);
-var response = RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyQueue);
+RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyQueue);
 
-Console.WriteLine(response);
+Console.ReadLine();
 RabbitMqHelper.CloseConnection(channel, connection);
