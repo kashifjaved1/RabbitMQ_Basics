@@ -185,7 +185,8 @@ namespace Core.Commons.Helpers
         /// <param name="queue">The queue.</param>
         /// <param name="autoAck">if set to <c>true</c> [automatic ack].</param>
         /// <returns>The string consumed message</returns>
-        public static string BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = true)
+        public static string BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false) // setting autoAck to false by default
+            // so that we'll manually acknowledge the message(s).
         {
             try
             {
