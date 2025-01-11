@@ -9,7 +9,7 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.Direct);
+RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.FanOut);
 
 var queueName = RabbitMqHelper.CreateTemporaryQueue(channel);
 RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyExchange, ExampleData.MyRoutingKey);
