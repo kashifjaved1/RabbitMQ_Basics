@@ -67,6 +67,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer", "src\Examples\He
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Producer", "src\Examples\HeadersExchange\Producer\Producer.csproj", "{3FC90496-E486-4F38-9997-7558A8114A53}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsistenHashingExchange", "ConsistenHashingExchange", "{0B973D0A-A9AF-48E3-AA0F-5F3CDDC2296A}"
+	ProjectSection(SolutionItems) = preProject
+		src\Examples\ConsistenHashingExchange\Note.txt = src\Examples\ConsistenHashingExchange\Note.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer", "src\Examples\ConsistenHashingExchange\Consumer\Consumer.csproj", "{9E8C85BF-AA91-46F2-9A72-1A646C95EF02}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Producer", "src\Examples\ConsistenHashingExchange\Producer\Producer.csproj", "{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +154,14 @@ Global
 		{3FC90496-E486-4F38-9997-7558A8114A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FC90496-E486-4F38-9997-7558A8114A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FC90496-E486-4F38-9997-7558A8114A53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E8C85BF-AA91-46F2-9A72-1A646C95EF02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8C85BF-AA91-46F2-9A72-1A646C95EF02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8C85BF-AA91-46F2-9A72-1A646C95EF02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E8C85BF-AA91-46F2-9A72-1A646C95EF02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +194,9 @@ Global
 		{9554A2F9-2D0A-4FE3-A232-323B7C82A5B1} = {2DD3CD43-313C-4D0C-BA3B-049C1D022613}
 		{42D92A7D-F0E3-4DD4-A0AA-1D058172A905} = {9554A2F9-2D0A-4FE3-A232-323B7C82A5B1}
 		{3FC90496-E486-4F38-9997-7558A8114A53} = {9554A2F9-2D0A-4FE3-A232-323B7C82A5B1}
+		{0B973D0A-A9AF-48E3-AA0F-5F3CDDC2296A} = {2DD3CD43-313C-4D0C-BA3B-049C1D022613}
+		{9E8C85BF-AA91-46F2-9A72-1A646C95EF02} = {0B973D0A-A9AF-48E3-AA0F-5F3CDDC2296A}
+		{BD882CA2-FF43-4D76-BE8E-C2AAFFFDB036} = {0B973D0A-A9AF-48E3-AA0F-5F3CDDC2296A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ABE9B04A-C004-4682-A752-6E6EE0D5D408}

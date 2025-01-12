@@ -1,0 +1,3 @@
+Before running this example, execute following command in RabbitMq_CMD.
+
+> rabbitmq-plugins enable rabbitmq_consistent_hash_exchange

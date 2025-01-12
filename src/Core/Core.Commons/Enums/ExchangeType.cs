@@ -26,6 +26,11 @@ namespace Core.Commons.Enums
         /// <summary>
         /// Exchange type used for AMQP topic exchanges.
         /// </summary>
-        Topic
+        Topic,
+
+        /// <summary>
+        /// The consistent hashing
+        /// </summary>
+        ConsistentHashing
     }
 }

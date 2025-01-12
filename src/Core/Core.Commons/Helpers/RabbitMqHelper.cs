@@ -104,6 +104,10 @@ namespace Core.Commons.Helpers
                     channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Headers);
                     break;
 
+                case ExchangeType.ConsistentHashing:
+                    channel.ExchangeDeclare(exchangeName, "x-consistent-hash");
+                    break;
+
                 default:
                     throw new InvalidExchangeTypeException();
             }
