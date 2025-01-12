@@ -13,8 +13,8 @@ var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 RabbitMqHelper.CreateExchange(channel, ExampleData.MyTopicExchange, ExchangeType.Topic); // comment it for using direct exchange.
 
 var message = "Message to broadcast to multiple consumers!";
-//RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: RabbitMqHelper.GetCustomRoutingKeyName(1), message: message);
-//RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: RabbitMqHelper.GetCustomRoutingKeyName(2), message: message);
+//RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: ExampleData.GetCustomRoutingKeyName(1), message: message);
+//RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: ExampleData.GetCustomRoutingKeyName(2), message: message);
 //RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: ExampleData.CommonRoutingKey, message: message);
 
 RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyTopicExchange, routingKey: "user.asia.payments", message: message); // comment it for to use above direct exchange publishing.

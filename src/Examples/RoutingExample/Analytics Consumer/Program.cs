@@ -15,7 +15,7 @@ RabbitMqHelper.CreateExchange(channel, ExampleData.MyTopicExchange, ExchangeType
 var queueName = RabbitMqHelper.CreateTemporaryQueue(channel);
 
 //// [NOTE]: A Queue can have more than one binding at the same time and you can test this by uncommenting below queue bindings.
-//RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, RabbitMqHelper.GetCustomRoutingKeyName(1));
+//RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, ExampleData.GetCustomRoutingKeyName(1));
 //RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, ExampleData.CommonRoutingKey);
 
 RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyTopicExchange, "*.asia.*"); // comment it for to use above direct exchange publishing.

@@ -1,4 +1,6 @@
-﻿namespace Core.Commons.Shared
+﻿using Core.Commons.Exceptions;
+
+namespace Core.Commons.Shared
 {
     public static class ExampleData
     {
@@ -11,6 +13,11 @@
         /// My topic exchange
         /// </summary>
         public const string MyTopicExchange = "MY_TOPIC_EXCHANGE";
+
+        /// <summary>
+        /// My custom exchange name
+        /// </summary>
+        public const string MyCustomExchange = "MY_CUSTOM_EXCHANGE";
 
         /// <summary>
         /// My custom queue
@@ -33,18 +40,64 @@
         public const string CommonRoutingKey = "COMMON_ROUTING_KEY";
 
         /// <summary>
-        /// My dynamic custom routing key
+        /// Gets the name of the custom routing.
         /// </summary>
-        public const string MyDynamicCustomRoutingKey = "MY_DYNAMIC_CUSTOM_ROUTING_KEY{0}";
+        /// <param name="obj">The object.</param>
+        /// <returns>The custom routing key name.</returns>
+        public static string GetCustomRoutingKeyName(object value)
+        {
+            return GetCustomName(MyCustomRoutingKey, value);
+        }
 
         /// <summary>
-        /// My custom hash wildcard topic routing key
+        /// Gets the name of the custom queue.
         /// </summary>
-        public const string MyCustomHashWildcardTopicRoutingKey = "abc.#";
+        /// <param name="value">The value.</param>
+        /// <returns>The custom queue name</returns>
+        public static string GetCustomQueueName(object value)
+        {
+            return GetCustomName(MyCustomQueue, value);
+        }
 
         /// <summary>
-        /// My custom sterik wildcard topic routing key
+        /// Gets the wildcard routing key.
         /// </summary>
-        public const string MyCustomSterikWildcardTopicRoutingKey = "*.xyz.*";
+        /// <param name="c">The c.</param>
+        /// <returns>The wildcard type routing key</returns>
+        /// <exception cref="Core.Commons.Exceptions.InvalidWildcardTypeException"></exception>
+        public static string GetWildcardRoutingKey(char wildCardType)
+        {
+            switch (wildCardType)
+            {
+                case '*':
+                    return "*.xyz.*";
+
+                case '#':
+                    return "abc.#";
+
+                default:
+                    throw new InvalidWildcardTypeException();
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the custom exchange.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>The custom routing key name.</returns>
+        public static string GetCustomExchangeName(object value)
+        {
+            return GetCustomName(MyCustomExchange, value);
+        }
+
+        /// <summary>
+        /// Gets the custom name.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>The custom routing key name.</returns>
+        public static string GetCustomName(string value1, object value2)
+        {
+            return $"{value1}_{value2}";
+        }
     }                       
 }                           

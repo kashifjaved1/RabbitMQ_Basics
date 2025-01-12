@@ -14,7 +14,7 @@ RabbitMqHelper.CreateExchange(channel, ExampleData.MyTopicExchange, ExchangeType
 
 var queueName = RabbitMqHelper.CreateTemporaryQueue(channel);
 
-//RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, RabbitMqHelper.GetCustomRoutingKeyName(2));
+//RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, ExampleData.GetCustomRoutingKeyName(2));
 //RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, ExampleData.CommonRoutingKey);
 
 RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyTopicExchange, "#.payments");

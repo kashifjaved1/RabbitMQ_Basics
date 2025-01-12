@@ -320,13 +320,15 @@ namespace Core.Commons.Helpers
         }
 
         /// <summary>
-        /// Gets the name of the custom routing.
+        /// Binds the exchange to exchange.
         /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>The custom routing key name.</returns>
-        public static string GetCustomRoutingKeyName(object obj)
+        /// <param name="channel">The channel.</param>
+        /// <param name="firstExchangeName">First name of the exchange.</param>
+        /// <param name="secondExchangeName">Name of the second exchange.</param>
+        /// <param name="routingKey">The routing key.</param>
+        public static void BindExchangeToExchange(IModel channel, string firstExchangeName, string secondExchangeName, string routingKey)
         {
-            return string.Format(nameof(ExampleData.MyDynamicCustomRoutingKey), obj);
+            channel.ExchangeBind(secondExchangeName, firstExchangeName, routingKey);
         }
     }
 }
