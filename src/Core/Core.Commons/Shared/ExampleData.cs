@@ -18,6 +18,11 @@
         public const string MyCustomQueue = "MY_CUSTOM_QUEUE";
 
         /// <summary>
+        /// The request queue
+        /// </summary>
+        public const string RequestQueue = "REQUEST_QUEUE";
+
+        /// <summary>
         /// My custom routing key
         /// </summary>
         public const string MyCustomRoutingKey = "MY_CUSTOM_ROUTING_KEY";

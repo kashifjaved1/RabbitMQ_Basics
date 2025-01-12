@@ -168,14 +168,17 @@ namespace Core.Commons.Helpers
         /// <param name="message">The message.</param>
         /// <param name="exchange">The exchange.</param>
         /// <param name="properties">The properties.</param>
-        public static void BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null)
+        public static void BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null, bool logToConsole = true)
         {
             // Uncomment below code snippet for BasicsExample, PubSubPattern, RoutingExample.
             try
             {
                 var body = Encoding.UTF8.GetBytes(message);
                 channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
-                Console.WriteLine($"published message: {message}");
+                if (logToConsole)
+                {
+                    Console.WriteLine($"published message: {message}");
+                }
             }
             catch (Exception ex)
             {
@@ -224,14 +227,14 @@ namespace Core.Commons.Helpers
         /// <param name="queue">The queue.</param>
         /// <param name="autoAck">if set to <c>true</c> [automatic ack].</param>
         /// <returns>The string consumed message</returns>
-        public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false, string? clientName = null) // setting autoAck to false by default
+        public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false, string? clientName = null, bool logToConsole = true) // setting autoAck to false by default
                                                                                                                                    // so that we'll manually acknowledge the message(s).
         {
             //// Uncomment below code snippet for BasicsExample, PubSubPattern, RoutingExample.
             try
             {
                 string displayText = string.Empty;
-                consumer.Received += (msg, args) =>
+                consumer.Received += (model, args) =>
                 {
                     var body = args.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
@@ -244,11 +247,13 @@ namespace Core.Commons.Helpers
                         displayText = $"{clientName} - Received message: '{message}'.";
                     }
 
-                    Console.WriteLine(displayText);
+                    if (logToConsole)
+                    {
+                        Console.WriteLine(displayText);
+                    }
                 };
 
                 channel.BasicConsume(queue, autoAck, consumer);
-                Console.WriteLine("Consuming...");
             }
             catch (Exception ex)
             {
@@ -261,7 +266,7 @@ namespace Core.Commons.Helpers
             //    int publishedTime = 0;
             //    int messageNo = 0;
             //    string displayText = string.Empty;
-            //    consumer.Received += (msg, args) =>
+            //    consumer.Received += (model, args) =>
             //    {
             //        publishedTime = Random.Next(1, 5);
 
