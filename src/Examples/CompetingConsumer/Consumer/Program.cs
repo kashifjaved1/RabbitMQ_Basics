@@ -13,18 +13,18 @@ string exchangeName = string.Empty; // Default Exchange.
 var useDefaultExchange = RabbitMqHelper.UseDefaultExchange();
 if (!useDefaultExchange)
 {
-    exchangeName = ExampleData.MyExchange;
+    exchangeName = ExampleData.MyDirectExchange;
     RabbitMqHelper.CreateExchange(channel, exchangeName, ExchangeType.Direct); // Doing in consumer because just in case it starts before producer,
     // so we have to make sure that exchange exists before proceeding with anything next.
 }
 
-RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
-RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, exchangeName, ExampleData.MyRoutingKey);
+RabbitMqHelper.CreateQueue(channel, ExampleData.MyCustomQueue);
+RabbitMqHelper.BindQueue(channel, ExampleData.MyCustomQueue, exchangeName, ExampleData.MyCustomRoutingKey);
 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); // CompetingConsumer patter: It allows to process one message at a time so other consumers won't
                                                                     // get stopped for this consumer if it taking more than required time to process a message.
 
 var consumer = RabbitMqHelper.GetConsumer(channel);
-RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyQueue);
+RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyCustomQueue);
 
 Console.ReadLine();
 RabbitMqHelper.CloseConnection(channel, connection);

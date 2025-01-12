@@ -9,8 +9,8 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.FanOut);
+RabbitMqHelper.CreateExchange(channel, ExampleData.MyDirectExchange, ExchangeType.FanOut);
 
 var message = "Broadcastable message!";
-RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyExchange, routingKey: ExampleData.MyRoutingKey, message: message);
+RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.MyDirectExchange, routingKey: ExampleData.MyCustomRoutingKey, message: message);
 RabbitMqHelper.CloseConnection(channel, connection);

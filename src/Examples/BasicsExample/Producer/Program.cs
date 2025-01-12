@@ -13,13 +13,13 @@ string exchangeName = string.Empty; // Default Exchange.
 var useDefaultExchange = RabbitMqHelper.UseDefaultExchange();
 if (!useDefaultExchange)
 {
-    exchangeName = ExampleData.MyExchange;
+    exchangeName = ExampleData.MyDirectExchange;
     RabbitMqHelper.CreateExchange(channel, exchangeName, ExchangeType.Direct);
 }
 
-RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
-RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, exchangeName, ExampleData.MyRoutingKey);
+RabbitMqHelper.CreateQueue(channel, ExampleData.MyCustomQueue);
+RabbitMqHelper.BindQueue(channel, ExampleData.MyCustomQueue, exchangeName, ExampleData.MyCustomRoutingKey);
 
 var message = "This is a basic message!";
-RabbitMqHelper.BasicPublishMessage(channel, exchange: exchangeName, routingKey:ExampleData.MyRoutingKey, message: message);
+RabbitMqHelper.BasicPublishMessage(channel, exchange: exchangeName, routingKey:ExampleData.MyCustomRoutingKey, message: message);
 RabbitMqHelper.CloseConnection(channel, connection);

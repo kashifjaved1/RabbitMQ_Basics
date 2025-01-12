@@ -18,6 +18,9 @@ RabbitMQ Notes:
 			2. Direct:
 				It sends message(s) to only Queue(s) where PublisherRoutingKey == Queue(s)BindingKey.
 			3. Topic:
-				It uses partial key matching via wildcard(*) mechanism, e.g. "abc.*", so here for the key to get match first 'abc.' should be exact same and next something like abc.green == abc.green will do the job.
+				It uses partial key matching via wildcards, sterik(*) matches one word and hash(#) matches 0 or more words. '*' example: Lets say 'abc.*' is a routing key &
+				queue having binding key 'abc.xyz' then it matches, but if binding key is 'abc.def.xyz' then it'll not match. '#' example: Lets say 'abc.#' is a routing key
+				and queue having binding key e.g. 'abc.', 'abc.xyz', 'abc.def.xyz', 'abc.000.111.222.333.444.555.666.777.888.999' then it'll match with all of them.
+
 			4. Header:
 				It uses message header instead of RoutingKey.

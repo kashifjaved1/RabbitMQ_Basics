@@ -9,10 +9,10 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-RabbitMqHelper.CreateExchange(channel, ExampleData.MyExchange, ExchangeType.FanOut);
+RabbitMqHelper.CreateExchange(channel, ExampleData.MyDirectExchange, ExchangeType.FanOut);
 
 var queueName = RabbitMqHelper.CreateTemporaryQueue(channel);
-RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyExchange, ExampleData.MyRoutingKey);
+RabbitMqHelper.BindQueue(channel, queueName, ExampleData.MyDirectExchange, ExampleData.MyCustomRoutingKey);
 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); 
 
 var consumer = RabbitMqHelper.GetConsumer(channel);

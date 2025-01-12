@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Core.Commons.Exceptions;
+using Core.Commons.Shared;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using ExchangeType = Core.Commons.Enums.ExchangeType;
@@ -169,40 +170,40 @@ namespace Core.Commons.Helpers
         /// <param name="properties">The properties.</param>
         public static void BasicPublishMessage(IModel channel, string routingKey, string message, string? exchange = null, IBasicProperties? properties = null)
         {
-            // Uncomment below code snippet for BasicsExample.
-            //try
-            //{
-            //    var body = Encoding.UTF8.GetBytes(message);
-            //    channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
-            //    Console.WriteLine($"published message: {message}");
-            //}
-            //catch (Exception ex)
-            //{
-            //    return $"Publish failed: {ex.Message}";
-            //}
-
-            // Uncomment below code snippet for CompetingConsumer.
+            // Uncomment below code snippet for BasicsExample, PubSubPattern, RoutingExample.
             try
             {
-                var messageNo = 0;
-                int publishingTime = 0;
-                Console.WriteLine($"Publishing...");
-                //Console.WriteLine($"Sending message #{messageNo++}");
-                while (true)
-                {
-                    publishingTime = Random.Next(1, 3);
-
-                    var body = Encoding.UTF8.GetBytes(message);
-                    channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
-
-                    Task.Delay(TimeSpan.FromSeconds(publishingTime)).Wait();
-                    Console.WriteLine($"Message #{++messageNo} '{message}' has been published in total {publishingTime}s.");
-                }
+                var body = Encoding.UTF8.GetBytes(message);
+                channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
+                Console.WriteLine($"published message: {message}");
             }
             catch (Exception ex)
             {
                 throw new Exception($"Publish failed: {ex.Message}");
             }
+
+            //// Uncomment below code snippet for CompetingConsumer.
+            //try
+            //{
+            //    var messageNo = 0;
+            //    int publishingTime = 0;
+            //    Console.WriteLine($"Publishing...");
+            //    //Console.WriteLine($"Sending message #{messageNo++}");
+            //    while (true)
+            //    {
+            //        publishingTime = Random.Next(1, 3);
+
+            //        var body = Encoding.UTF8.GetBytes(message);
+            //        channel.BasicPublish(exchange: exchange ?? string.Empty, routingKey: routingKey, basicProperties: properties, body: body);
+
+            //        Task.Delay(TimeSpan.FromSeconds(publishingTime)).Wait();
+            //        Console.WriteLine($"Message #{++messageNo} '{message}' has been published in total {publishingTime}s.");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception($"Publish failed: {ex.Message}");
+            //}
         }
 
         /// <summary>
@@ -226,7 +227,7 @@ namespace Core.Commons.Helpers
         public static void BasicConsumeMessage(EventingBasicConsumer consumer, IModel channel, string queue, bool autoAck = false, string? clientName = null) // setting autoAck to false by default
                                                                                                                                    // so that we'll manually acknowledge the message(s).
         {
-            //// Uncomment below code snippet for BasicsExample.
+            //// Uncomment below code snippet for BasicsExample, PubSubPattern, RoutingExample.
             try
             {
                 string displayText = string.Empty;
@@ -291,6 +292,10 @@ namespace Core.Commons.Helpers
             //}
         }
 
+        /// <summary>
+        /// Uses the default exchange.
+        /// </summary>
+        /// <returns>True or False regarding default exchange.</returns>
         public static bool UseDefaultExchange()
         {
             Console.Write("Want to use default? Y/N: ");
@@ -307,6 +312,16 @@ namespace Core.Commons.Helpers
                     return false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the name of the custom routing.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>The custom routing key name.</returns>
+        public static string GetCustomRoutingKeyName(object obj)
+        {
+            return string.Format(nameof(ExampleData.MyDynamicCustomRoutingKey), obj);
         }
     }
 }

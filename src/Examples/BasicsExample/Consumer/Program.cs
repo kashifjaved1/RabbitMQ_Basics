@@ -13,16 +13,16 @@ string exchangeName = string.Empty; // Default Exchange.
 var useDefaultExchange = RabbitMqHelper.UseDefaultExchange();
 if (!useDefaultExchange)
 {
-    exchangeName = ExampleData.MyExchange;
+    exchangeName = ExampleData.MyDirectExchange;
     RabbitMqHelper.CreateExchange(channel, exchangeName, ExchangeType.Direct); // Doing in consumer because just in case it starts before producer,
     // so we have to make sure that exchange exists before proceeding with anything next.
 }
 
-RabbitMqHelper.CreateQueue(channel, ExampleData.MyQueue);
-RabbitMqHelper.BindQueue(channel, ExampleData.MyQueue, exchangeName, ExampleData.MyRoutingKey);
+RabbitMqHelper.CreateQueue(channel, ExampleData.MyCustomQueue);
+RabbitMqHelper.BindQueue(channel, ExampleData.MyCustomQueue, exchangeName, ExampleData.MyCustomRoutingKey);
 
 var consumer = RabbitMqHelper.GetConsumer(channel);
-RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyQueue);
+RabbitMqHelper.BasicConsumeMessage(consumer, channel, ExampleData.MyCustomQueue);
 
 Console.ReadLine();
 RabbitMqHelper.CloseConnection(channel, connection);
