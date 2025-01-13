@@ -21,7 +21,7 @@ RabbitMqHelper.CreateExchange(
     });
 
 var message = "This is a alternative-exchange pattern message!";
-//RabbitMqHelper.BasicPublishMessage(channel, exchange: mainExchangeName, routingKey: ExampleData.GetCustomRoutingKeyName("main"), message: message);
+RabbitMqHelper.BasicPublishMessage(channel, exchange: mainExchangeName, routingKey: ExampleData.GetCustomRoutingKeyName("main"), message: message);
 RabbitMqHelper.BasicPublishMessage(channel, exchange: mainExchangeName, routingKey: "abc", message: message); // As this routingKey isn't used to queue to get binded with exchagne so this published message will landing messages to altExchange.
 
 Console.ReadKey();
