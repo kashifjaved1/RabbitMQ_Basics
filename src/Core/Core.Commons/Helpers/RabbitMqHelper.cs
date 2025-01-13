@@ -84,24 +84,24 @@ namespace Core.Commons.Helpers
         /// <param name="exchangeName">Name of the exchange.</param>
         /// <param name="exchangeType">Type of the exchange.</param>
         /// <exception cref="Core.Commons.Exceptions.InvalidExchangeTypeException"></exception>
-        public static void CreateExchange(IModel channel, string exchangeName, ExchangeType exchangeType)
+        public static void CreateExchange(IModel channel, string exchangeName, ExchangeType exchangeType, IDictionary<string, object>? arguments = null)
         {
             switch (exchangeType)
             {
                 case ExchangeType.Direct:
-                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Direct);
+                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Direct, arguments: arguments);
                     break;
 
                 case ExchangeType.FanOut:
-                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Fanout);
+                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Fanout, arguments: arguments);
                     break;
 
                 case ExchangeType.Topic:
-                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Topic);
+                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Topic, arguments: arguments);
                     break;
 
                 case ExchangeType.Headers:
-                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Headers);
+                    channel.ExchangeDeclare(exchangeName, RabbitMQ.Client.ExchangeType.Headers, arguments: arguments);
                     break;
 
                 case ExchangeType.ConsistentHashing:
@@ -255,8 +255,11 @@ namespace Core.Commons.Helpers
                     {
                         Console.WriteLine(displayText);
                     }
+                    
+                    // BasicAck use for manual acknowledgement incase of autoAck sets to false.
+                    channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 'deliveryTag' is for ensuring that the message we're processing and the one one
+                                                                                  // acknowledge is same, and 'multiple: false' ensures that we only process one message at a time.
                 };
-
                 channel.BasicConsume(queue, autoAck, consumer);
             }
             catch (Exception ex)
@@ -288,6 +291,7 @@ namespace Core.Commons.Helpers
             //        Console.WriteLine(displayText);
 
             //        Task.Delay(TimeSpan.FromSeconds(publishedTime)).Wait();
+            ////      BasicAck use for manual acknowledgement incase of autoAck sets to false.
             //        channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 'deliveryTag' is for ensuring that the message we're processing and the one one
             //        // acknowledge is same, and 'multiple: false' ensures that we only process one message at a time.
             //    };

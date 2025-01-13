@@ -24,3 +24,6 @@ RabbitMQ Notes:
 
 			4. Header:
 				It uses message header instead of RoutingKey.
+			5. Alternative and Dead Letter Exchange:
+				Unlike other exchanges these are just exchanges of normal type e.g. direct or fanout etc., but there's key difference between them. Alternative Exchange:
+				Holds unreadable &unrouteable messages only. Dead Letter Exchange: Holds expired & rejected messages only.
