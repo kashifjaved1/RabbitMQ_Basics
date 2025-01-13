@@ -24,12 +24,13 @@ namespace Core.Commons.Helpers
         /// <param name="uri">The URI.</param>
         /// <param name="clientName">Name of the client.</param>
         /// <returns>The connection factory.</returns>
-        public static ConnectionFactory GetConnectionFactory(Uri uri, string? clientName = null)
+        public static ConnectionFactory GetConnectionFactory(Uri uri, string? clientName = null, string? vHost = null)
         {
             ConnectionFactory connectionFactory = new()
             {
                 Uri = uri,
-                ClientProvidedName = clientName
+                ClientProvidedName = clientName,
+                VirtualHost = vHost ?? "/",
             };
 
             return connectionFactory;
@@ -125,7 +126,7 @@ namespace Core.Commons.Helpers
         /// <returns>The Queue Declaration.</returns>
         public static QueueDeclareOk CreateQueue(IModel channel, string queueName, bool durable = false, bool exclusive = false, bool autoDelete = false, IDictionary<string, object>? arguments = null)
         {
-            return channel.QueueDeclare(queueName, false, false, false, null);
+            return channel.QueueDeclare(queueName, durable, exclusive, autoDelete, null);
         }
 
         /// <summary>
