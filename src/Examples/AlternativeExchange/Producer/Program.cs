@@ -9,19 +9,20 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-var altExchangeName = ExampleData.GetCustomExchangeName("alternative");
+var altExchangeName = "alternate"; // ExampleData.GetCustomExchangeName("main");
 RabbitMqHelper.CreateExchange(channel, altExchangeName, ExchangeType.FanOut);
 
+var mainExchangeName = "main"; // ExampleData.GetCustomExchangeName("main");
 RabbitMqHelper.CreateExchange(
     channel,
-    ExampleData.GetCustomExchangeName("main"),
+    mainExchangeName,
     ExchangeType.Direct,
-    new Dictionary<string, object> { { "alternative-exchange", altExchangeName } 
+    new Dictionary<string, object> { { "alternate-exchange", "alternate" } 
     });
 
 var message = "This is a alternative-exchange pattern message!";
-//RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.GetCustomExchangeName("main"), routingKey: ExampleData.GetCustomRoutingKeyName("main"), message: message);
-RabbitMqHelper.BasicPublishMessage(channel, exchange: ExampleData.GetCustomExchangeName("main"), routingKey: "abc", message: message); // This is for landing messages to altExchange as no exchange having 'abc' routing key so its unrouteable and will land to altExchange.
+//RabbitMqHelper.BasicPublishMessage(channel, exchange: mainExchangeName, routingKey: ExampleData.GetCustomRoutingKeyName("main"), message: message);
+RabbitMqHelper.BasicPublishMessage(channel, exchange: mainExchangeName, routingKey: "abc", message: message); // As this routingKey isn't used to queue to get binded with exchagne so this published message will landing messages to altExchange.
 
 Console.ReadKey();
 RabbitMqHelper.CloseConnection(channel, connection);

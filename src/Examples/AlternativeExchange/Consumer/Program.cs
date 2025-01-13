@@ -13,8 +13,16 @@ var connectionFactory = RabbitMqHelper.GetConnectionFactory(uri, clientName);
 var connection = RabbitMqHelper.OpenConnection(connectionFactory);
 var channel = RabbitMqHelper.CreateChannel(connectionFactory, connection);
 
-var altExchangeName = ExampleData.GetCustomExchangeName("alternative");
+var altExchangeName = "alternate"; //ExampleData.GetCustomExchangeName("alternate");
 RabbitMqHelper.CreateExchange(channel, altExchangeName, ExchangeType.FanOut);
+
+var mainExchangeName = "main"; // ExampleData.GetCustomExchangeName("main");
+RabbitMqHelper.CreateExchange(
+    channel,
+    mainExchangeName,
+    ExchangeType.Direct,
+    new Dictionary<string, object> { { "alternate-exchange", altExchangeName }
+    });
 
 var altQueue = ExampleData.GetCustomQueueName("alt-queue");
 RabbitMqHelper.CreateQueue(channel, altQueue);
@@ -28,16 +36,7 @@ altConsumer.Received += (model, args) =>
     Console.WriteLine($"AltQueue - message: {message}");
 };
 
-RabbitMqHelper.BasicConsumeMessage(altConsumer, channel, altQueue, autoAck: true, logToConsole: false);
-
-
-var mainExchangeName = ExampleData.GetCustomExchangeName("main");
-RabbitMqHelper.CreateExchange(
-    channel,
-    mainExchangeName,
-    ExchangeType.Direct,
-    new Dictionary<string, object> { { "alternative-exchange", altExchangeName }
-    });
+channel.BasicConsume(consumer: altConsumer, queue: altQueue, autoAck: true);
 
 var mainQueue = ExampleData.GetCustomQueueName("main-queue");
 RabbitMqHelper.CreateQueue(channel, mainQueue);
@@ -50,7 +49,7 @@ mainConsumer.Received += (model, args) =>
     Console.WriteLine($"MainQueue - message: {message}");
 };
 
-RabbitMqHelper.BasicConsumeMessage(mainConsumer, channel, mainQueue, autoAck: true, logToConsole: false);
+channel.BasicConsume(consumer: mainConsumer, queue: mainQueue, autoAck: true);
 
 Console.ReadLine();
 RabbitMqHelper.CloseConnection(channel, connection);
